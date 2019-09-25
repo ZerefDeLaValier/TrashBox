@@ -1,4 +1,4 @@
-#/usr/bin/python3
+#!/usr/bin/python3
 a = int(input("Write a number \n"))
 if (a % 3 == 0):
     print("The number is a multiple of three")
