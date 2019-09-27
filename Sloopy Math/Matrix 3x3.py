@@ -23,6 +23,3 @@ elif space == 3: #4x4
     i3o = re.split(r' ', i3)
     i4 = str(input("4 "))
     i4o = re.split(r' ', i4)
-
-
-
