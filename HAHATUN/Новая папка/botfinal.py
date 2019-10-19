@@ -1,9 +1,21 @@
 import requests
+import pyrebase
 import vk_api
 import random
 from vk_api.longpoll import VkLongPoll, VkEventType
 import json
-import vk
+
+config = {
+  "apiKey": "AIzaSyCfS72UjYiXTMPzyPOU3zzphYKShw3d1XE",
+  "authDomain": "edubot72.firebaseapp.com",
+  "databaseURL": "https://edubot72.firebaseio.com",
+  "storageBucket": "edubot72.appspot.com",
+  "serviceAccount": "C:\TrashBox\HAHATUN\Bot\edubot72-firebase-adminsdk-ga2lf-a12ce0d85e.json"
+}
+
+firebase = pyrebase.initialize_app(config)
+auth = firebase.auth()
+db = firebase.database()
 
 vk_session = vk_api.VkApi(token='12608dbd12d1a37e7dc4a19ff218849b5c123b431f2014fbec393e2e06b59a8baa623e225d5b53d8ddde1')
 longpoll = VkLongPoll(vk_session)
@@ -49,6 +61,36 @@ for event in longpoll.listen():
                         vk.messages.send(
                                     user_id=event.user_id, random_id = random.randint(1, 2147483647),
                                     message="Тестирование начато!")
+                        vk.messages.send(
+                                user_id=event.user_id, random_id = random.randint(1, 2147483647),
+                                message=db.child("math").child("task1").child("que").get().val())
+                        vk.messages.send(
+                                user_id=event.user_id, random_id = random.randint(1, 2147483647),
+                                message=db.child("math").child("task1").child("1").get().val())
+                        vk.messages.send(
+                                user_id=event.user_id, random_id = random.randint(1, 2147483647),
+                                message=db.child("math").child("task1").child("2").get().val())
+                        vk.messages.send(
+                                user_id=event.user_id, random_id = random.randint(1, 2147483647),
+                                message=db.child("math").child("task1").child("3").get().val())
+                        vk.messages.send(
+                                user_id=event.user_id, random_id = random.randint(1, 2147483647),
+                                message=db.child("math").child("task1").child("4").get().val())
+                        vk.messages.send(
+                                user_id=event.user_id, random_id = random.randint(1, 2147483647),
+                                message="Ответ?")
+                        for event in longpoll.listen():
+                            if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.text:
+                                if event.text == db.child("math").child("task1").child("ans").get().val() :
+                                    vk.messages.send(
+                                        user_id=event.user_id, random_id = random.randint(1, 2147483647),
+                                        message="Правильный ответ!")
+                                        
+                                        
+                        else:
+                            vk.messages.send(
+                                        user_id=event.user_id, random_id = random.randint(1, 2147483647),
+                                        message="Неправильный ответ!")
                         break
                     elif event.text == 'Нет':
                         vk.messages.send(
@@ -56,4 +98,3 @@ for event in longpoll.listen():
                                     message="Ну и чмо же ты!")
                         break
             
-#------------------------------------------------------------------------------------------------------
