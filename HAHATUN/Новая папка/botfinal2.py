@@ -12,7 +12,7 @@ config = {
   "authDomain": "edubot72.firebaseapp.com",
   "databaseURL": "https://edubot72.firebaseio.com",
   "storageBucket": "edubot72.appspot.com",
-  "serviceAccount": "C:\TrashBox\HAHATUN\Bot\edubot72-firebase-adminsdk-ga2lf-a12ce0d85e.json"
+  "serviceAccount": "edubot72-firebase-adminsdk-ga2lf-a12ce0d85e.json"
 }
 
 firebase = pyrebase.initialize_app(config)
