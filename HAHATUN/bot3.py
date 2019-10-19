@@ -38,7 +38,18 @@ for event in longpoll.listen():
             vk.messages.send(
                 user_id=event.user_id, random_id = random.randint(1, 2147483647),
                  message="Начать тестирование? \n Да/Нет")
-            i = 2
+            for event in longpoll.listen():
+                if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.text:
+                    if event.text == 'Да':
+                        vk.messages.send(
+                                    user_id=event.user_id, random_id = random.randint(1, 2147483647),
+                                    message="Тестирование начато!")
+                        break
+                    elif event.text == 'Нет':
+                        vk.messages.send(
+                                    user_id=event.user_id, random_id = random.randint(1, 2147483647),
+                                    message="Ну и чмо же ты!")
+                        break
             
 #------------------------------------------------------------------------------------------------------
         if i == 1:
@@ -48,15 +59,3 @@ for event in longpoll.listen():
                             message="Матеша, я выбираю тебя!")
                         subj = 1
                         i = 0
-        elif i == 2:
-            if event.text == 'Да':
-                vk.messages.send(
-                            user_id=event.user_id, random_id = random.randint(1, 2147483647),
-                            message="Тестирование начато!")
-                i = 0
-                if subj == 1:
-                    print(6)
-            elif event.text == 'Нет':
-                vk.messages.send(
-                            user_id=event.user_id, random_id = random.randint(1, 2147483647),
-                            message="Ну и чмо же ты!")
