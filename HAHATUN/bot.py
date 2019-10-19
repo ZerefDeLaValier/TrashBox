@@ -4,8 +4,6 @@ import random
 import json
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
  
-token = "b1679d6797118b368c5330d73c94aa352ac65cf23ebc0849dfa1baf9dab3f52ee6c2b98a180b803b89727"
- 
 vk = vk_api.VkApi(token="b1679d6797118b368c5330d73c94aa352ac65cf23ebc0849dfa1baf9dab3f52ee6c2b98a180b803b89727")
  
 vk._auth_token()
@@ -22,10 +20,14 @@ while True:
                 vk.method("messages.send", {"peer_id": id, "message": "Добро пожаловать в EduBot72! Напишите 'Помощь' для получения списка команд. ", "random_id": random.randint(1, 2147483647)})
             elif body.lower() == "помощь":
                 vk.method("messages.send", {"peer_id": id, "message": "Список команд: \n Предмет - выбор предмета для тестирования. \n Статистика - вывод вашей статистики по предметам. \n Рассылка - включение и отключение автоматической рассылки. \n Помощь - вывод списка команд.", "random_id": random.randint(1, 2147483647)})
-            elif body.lower() == "саня":
-                vk.method("messages.send", {"peer_id": id, "message": "Хуй соси!", "random_id": random.randint(1, 2147483647)})
-            elif body.lower() == "пока":
-                vk.method("messages.send", {"peer_id": id, "message": "Пока! Возвращайся ещё!", "random_id": random.randint(1, 2147483647)})
+            elif body.lower() == "статистика":
+                vk.method("messages.send", {"peer_id": id, "message": "", "random_id": random.randint(1, 2147483647)})
+            elif body.lower() == "рассылка":
+                vk.method("messages.send", {"peer_id": id, "message": "Отключить авто-рассылку? \n Да \n Нет", "random_id": random.randint(1, 2147483647)})
+                if body.lower() == "да":
+                    vk.method("message.send", {"peer_id": id, "message": "Рассылка отключена.", "random_id": random.randint(1, 2147483647)})
+                elif body.lower() == "нет":
+                    vk.method("message.send", {"peer_id": id, "message": "Рассылка включена.", "random_id": random.randint(1, 2147483647)})
             else:
                 vk.method("messages.send", {"peer_id": id, "message": "Этой команды я пока что не знаю, но может скоро узнаю!", "random_id": random.randint(1, 2147483647)})
     except Exception as E:
