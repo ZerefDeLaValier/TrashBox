@@ -39,6 +39,7 @@ def matrix():
             i4o[z] = int(i4o[z])
     #import end
 
+    #main start
     if space == 1:
         answer = ((i1o[0])*(i2o[1]))-((i1o[1])*(i2o[0]))
         
@@ -53,4 +54,5 @@ def matrix():
         answer1 = ((i4o[0]*(((i1o[1]*i2o[2]*i3o[3])+(i2o[1]*i3o[2]*i1o[3])+(i1o[2]*i2o[3]*i3o[1]))-((i1o[3]*i2o[2]*i3o[1])+(i1o[1]*i2o[3]*i3o[2])+(i1o[2]*i2o[1]*i3o[3])))))
         answer = - answer1 + answer2 - answer3 + answer4
     return(answer)
+    #main end
 print(matrix())
