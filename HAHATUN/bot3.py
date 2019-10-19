@@ -26,6 +26,13 @@ for event in longpoll.listen():
             vk.messages.send( 
                 user_id=event.user_id, random_id = random.randint(1, 2147483647),
                 message="Выберите предмет: \n 1. Математика" )
+            for event in longpoll.listen():
+                if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.text:
+                    if event.text == '1':
+                        vk.messages.send(
+                                    user_id=event.user_id, random_id = random.randint(1, 2147483647),
+                                    message="Матеша, я выбираю тебя!")
+                        break
         if event.text == 'Рассылка' or event.text == 'рассылка':
             vk.messages.send( 
                 user_id=event.user_id, random_id = random.randint(1, 2147483647),
@@ -52,10 +59,3 @@ for event in longpoll.listen():
                         break
             
 #------------------------------------------------------------------------------------------------------
-        if i == 1:
-            if event.text == "1":
-                        vk.messages.send(
-                            user_id=event.user_id, random_id = random.randint(1, 2147483647),
-                            message="Матеша, я выбираю тебя!")
-                        subj = 1
-                        i = 0
