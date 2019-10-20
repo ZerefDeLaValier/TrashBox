@@ -24,7 +24,7 @@ for event in longpoll.listen():
         if event.text.lower() == 'начать':
             vk.messages.send( 
                 user_id=event.user_id, random_id = random.randint(1, 2147483647),
-                message="Добро пожаловать в EduBot72! Напишите 'Помощь' для получения списка команд.", keyboard=keyboard_standart.json
+                message="Добро пожаловать в EduBot72! Напишите 'Помощь' для получения списка команд.", keyboard=keyboard_standart)
         elif event.text.lower() == 'помощь': 
             vk.messages.send( 
                 user_id=event.user_id, random_id = random.randint(1, 2147483647),
@@ -69,7 +69,7 @@ for event in longpoll.listen():
         elif event.text.lower() == 'вверх вверх вниз вниз влево вправо влево вправо б а':
             vk.messages.send( 
                 user_id=event.user_id, random_id = random.randint(1, 2147483647),
-                message="Кодил это дерьмо: Степан Ларионов\nБаза данных и библиотеки: Богдан Ивакин\nВеб-разработка: Игнат Марковский\nДизайн и бета-тест: Артём Журиков\nБессменный лидер и наставник: Иван Гуляев\n\nКак же я задолбался.", keyboard=openkeyboard_standart.json
+                message="Кодил это дерьмо: Степан Ларионов\nБаза данных и библиотеки: Богдан Ивакин\nВеб-разработка: Игнат Марковский\nДизайн и бета-тест: Артём Журиков\nБессменный лидер и наставник: Иван Гуляев\n\nКак же я задолбался.", keyboard=keyboard_standart)
         elif event.text.lower() == 'тестирование':
             vk.messages.send(
                 user_id=event.user_id, random_id = random.randint(1, 2147483647),
