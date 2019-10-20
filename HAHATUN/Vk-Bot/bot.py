@@ -4,24 +4,14 @@ import vk_api
 import random
 from vk_api.longpoll import VkLongPoll, VkEventType
 import json
+import base
+import config
 
 task = ["task1","task2","task3","task4","task5","task6","task7","task8","task9","task10"]
 
-config = {
-  "apiKey": "AIzaSyCfS72UjYiXTMPzyPOU3zzphYKShw3d1XE",
-  "authDomain": "edubot72.firebaseapp.com",
-  "databaseURL": "https://edubot72.firebaseio.com",
-  "storageBucket": "edubot72.appspot.com",
-  "serviceAccount": "edubot72-firebase-adminsdk-ga2lf-a12ce0d85e.json"
-}
-
-firebase = pyrebase.initialize_app(config)
-auth = firebase.auth()
-db = firebase.database()
-
-vk_session = vk_api.VkApi(token='12608dbd12d1a37e7dc4a19ff218849b5c123b431f2014fbec393e2e06b59a8baa623e225d5b53d8ddde1')
-longpoll = VkLongPoll(vk_session)
-vk = vk_session.get_api()
+db = base.init_db()
+vk = base.init_vk()
+longpoll = base.init_longpoll()
 
 for event in longpoll.listen():
     if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.text:

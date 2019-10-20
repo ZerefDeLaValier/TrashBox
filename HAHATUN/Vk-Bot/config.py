@@ -11,7 +11,7 @@ def db_config(tokenpath):
     })
 
 
-def vk_token():
-    return ('12608dbd12d1a37e7dc4a19ff218849b5c123b431f2014fbec393e2e06b59a8baa623e225d5b53d8ddde1')
+def vk_token(token):
+    return (token)
 
 
