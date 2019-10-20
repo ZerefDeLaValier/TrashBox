@@ -1,0 +1,41 @@
+{
+    "one_time": false,
+    "buttons": [
+      [{
+        "action": {
+          "type": "text",
+          "label": "Тестирование"
+        },
+        "color": "positive"
+      }
+        ],
+        [{
+            "action": {
+              "type": "text",
+              "label": "Предмет"
+            },
+            "color": "positive"
+          }],
+    [{
+        "action": {
+          "type": "text",
+          "label": "Статистика"
+        },
+        "color": "positive"}],
+
+      [{
+            "action": {
+              "type": "text",
+              "label": "Рассылка"
+            },
+            "color": "default"
+          },
+        {
+            "action": {
+            "type": "text",
+            "label": "Помощь"
+          },
+          "color": "default"}
+      ]
+    ]
+  }

@@ -6,71 +6,83 @@ from vk_api.longpoll import VkLongPoll, VkEventType
 import json
 import base
 import config
+import enum
+
+num = 0
 
 task = ["task1","task2","task3","task4","task5","task6","task7","task8","task9","task10"]
 
 db = base.init_db()
 vk = base.init_vk()
 longpoll = base.init_longpoll()
-
+keyboard_standart = open("C:\TrashBox\HAHATUN\Vk-Bot\keyboard_standart.json", "r", encoding="UTF-8").read()
+keyboard_subj = open("C:\TrashBox\HAHATUN\Vk-Bot\keyboard_subj.json", "r", encoding="UTF-8").read()
+keyboard_yn = open("C:\TrashBox\HAHATUN\Vk-Bot\keyboard_yn.json", "r", encoding="UTF-8").read()
+keyboard_answr = open("C:\TrashBox\HAHATUN\Vk-Bot\keyboard_answr.json", "r", encoding="UTF-8").read()
 for event in longpoll.listen():
     if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.text:
-        if event.text == 'Начать' or event.text == 'начать':
+        if event.text.lower() == 'начать':
             vk.messages.send( 
                 user_id=event.user_id, random_id = random.randint(1, 2147483647),
-                message="Добро пожаловать в EduBot72! Напишите 'Помощь' для получения списка команд." )
-        if event.text == 'Помощь' or event.text == 'помощь': 
+                message="Добро пожаловать в EduBot72! Напишите 'Помощь' для получения списка команд.", keyboard=keyboard_standart.json
+        elif event.text.lower() == 'помощь': 
             vk.messages.send( 
                 user_id=event.user_id, random_id = random.randint(1, 2147483647),
                  message="Список команд: \n Предмет - выбор предмета для тестирования. \n Статистика - вывод вашей статистики по предметам. \n Рассылка - включение и отключение автоматической рассылки. \n Тестирование - начало тестирования. \n Помощь - вывод списка команд." )
-        if event.text == 'Предмет' or event.text == 'предмет':
+        elif event.text.lower() == 'предмет':
             i = 1
             vk.messages.send( 
                 user_id=event.user_id, random_id = random.randint(1, 2147483647),
-                message="Выберите предмет: \n 1. Математика" )
+                message="Выберите предмет: \n 1. Математика", keyboard=keyboard_subj)
             for event in longpoll.listen():
                 if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.text:
                     if event.text == '1':
                         vk.messages.send(
                                     user_id=event.user_id, random_id = random.randint(1, 2147483647),
-                                    message="Матеша, я выбираю тебя!")
+                                    message="Матеша, я выбираю тебя!", keyboard=keyboard_standart)
                         break
-        if event.text == 'Рассылка' or event.text == 'рассылка':
+                    elif event.text.lower() == 'назад':
+                        vk.messages.send(
+                                    user_id=event.user_id, random_id = random.randint(1, 2147483647),
+                                    message="Меню", keyboard=keyboard_standart)
+                        break
+        elif event.text.lower() == 'рассылка':
             vk.messages.send( 
                 user_id=event.user_id, random_id = random.randint(1, 2147483647),
-                 message="Отключить авто-рассылку? \n Да \n Нет")
-        if event.text == 'Статистика' or event.text == 'статистика':
+                 message="Отключить авто-рассылку? \n Да \n Нет", keyboard=keyboard_yn)
+            for event in longpoll.listen():
+                if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.text:
+                    if event.text.lower() == 'да':
+                        vk.messages.send(
+                                        user_id=event.user_id, random_id = random.randint(1, 2147483647),
+                                        message="Рассылка отключена!", keyboard=keyboard_standart)
+                        break
+                    elif event.text.lower() == 'нет':
+                        vk.messages.send(
+                                        user_id=event.user_id, random_id = random.randint(1, 2147483647),
+                                        message="Рассылка включена!", keyboard=keyboard_standart)
+                        break
+        elif event.text.lower() == 'статистика':
             vk.messages.send(
                 user_id=event.user_id, random_id = random.randint(1, 2147483647),
                  message="Ваша статистика по предметам: \n Математика: " + str(num))
-        if event.text == 'Тестирование' or event.text == 'тестирование':
+        elif event.text.lower() == 'вверх вверх вниз вниз влево вправо влево вправо б а':
+            vk.messages.send( 
+                user_id=event.user_id, random_id = random.randint(1, 2147483647),
+                message="Кодил это дерьмо: Степан Ларионов\nБаза данных и библиотеки: Богдан Ивакин\nВеб-разработка: Игнат Марковский\nДизайн и бета-тест: Артём Журиков\nБессменный лидер и наставник: Иван Гуляев\n\nКак же я задолбался.", keyboard=openkeyboard_standart.json
+        elif event.text.lower() == 'тестирование':
             vk.messages.send(
                 user_id=event.user_id, random_id = random.randint(1, 2147483647),
-                 message="Начать тестирование? \n Да/Нет")
+                 message="Начать тестирование? \n Да/Нет", keyboard=keyboard_yn)
             for event in longpoll.listen():
                 if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.text:
-                    if event.text == 'Да':
+                    if event.text.lower() == 'да':
                         num = 0
                         tests = 9
                         while tests != -1:
                             vk.messages.send(
-                                user_id=event.user_id, random_id = random.randint(1, 2147483647),
-                                message=db.child("math").child(task[tests]).child("que").get().val())
-                            vk.messages.send(
-                                user_id=event.user_id, random_id = random.randint(1, 2147483647),
-                                message=db.child("math").child(task[tests]).child("1").get().val())
-                            vk.messages.send(
-                                user_id=event.user_id, random_id = random.randint(1, 2147483647),
-                                message=db.child("math").child(task[tests]).child("2").get().val())
-                            vk.messages.send(
-                                user_id=event.user_id, random_id = random.randint(1, 2147483647),
-                                message=db.child("math").child(task[tests]).child("3").get().val())
-                            vk.messages.send(
-                                user_id=event.user_id, random_id = random.randint(1, 2147483647),
-                                message=db.child("math").child(task[tests]).child("4").get().val())
-                            vk.messages.send(
-                                user_id=event.user_id, random_id = random.randint(1, 2147483647),
-                                message="Ответ?")
+                                user_id=event.user_id, random_id = random.randint(1, 2147483647), keyboard=keyboard_answr,
+                                message=db.child("math").child(task[tests]).child("que").get().val()+ '\n\na)'+ db.child("math").child(task[tests]).child("1").get().val()+ '  б)'+ db.child("math").child(task[tests]).child("2").get().val()+ '  в)'+ db.child("math").child(task[tests]).child("3").get().val()+ '  г)'+ db.child("math").child(task[tests]).child("4").get().val()+ '\nОтвет?')
                             for event in longpoll.listen():
                                 if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.text:
                                     if event.text == db.child("math").child(task[tests]).child("ans").get().val() :
@@ -78,6 +90,10 @@ for event in longpoll.listen():
                                             user_id=event.user_id, random_id = random.randint(1, 2147483647),
                                             message="Правильный ответ!")
                                         num += 1
+                                        break
+                                    elif event.text.lower() == 'отмена тестирования':
+                                        tests = 0
+                                        num = 0
                                         break
                                     else:
                                         vk.messages.send(
@@ -87,11 +103,15 @@ for event in longpoll.listen():
                             tests -= 1
                         vk.messages.send(
                                     user_id=event.user_id, random_id = random.randint(1, 2147483647),
-                                    message="Тестирование окончено! Введите 'Статистика'")
+                                    message="Тестирование окончено! Введите 'Статистика'", keyboard = keyboard_standart)
                         break
-                    elif event.text == 'Нет':
+                    elif event.text.lower() == 'нет':
                         vk.messages.send(
                                     user_id=event.user_id, random_id = random.randint(1, 2147483647),
-                                    message="Ну и чмо же ты!")
+                                    message="Ну и чмо же ты!", keyboard = keyboard_standart)
                         break
+        else:
+            vk.messages.send(
+                        user_id=event.user_id, random_id = random.randint(1, 2147483647),
+                        message="Я не знаю такой команды", keyboard = keyboard_standart)
             

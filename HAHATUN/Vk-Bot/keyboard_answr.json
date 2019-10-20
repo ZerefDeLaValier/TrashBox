@@ -1,0 +1,42 @@
+{
+    "one_time": false,
+    "buttons": [
+      [{
+        "action": {
+          "type": "text",
+          "label": "а)"
+        },
+        "color": "default"
+      }
+      ,
+    {
+        "action": {
+            "type": "text",
+            "label": "б)"
+          },
+          "color": "default"
+    }],
+    [{
+        "action": {
+          "type": "text",
+          "label": "в)"
+        },
+        "color": "default"
+      }
+      ,
+    {
+        "action": {
+            "type": "text",
+            "label": "г)"
+          },
+          "color": "default"
+    }],
+    [{
+      "action": {
+        "type": "text",
+        "label": "Отмена тестирования"
+      },
+      "color": "default"
+    }]
+  ]
+}
