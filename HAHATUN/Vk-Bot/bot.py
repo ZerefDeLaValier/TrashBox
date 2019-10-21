@@ -15,10 +15,10 @@ task = ["task1","task2","task3","task4","task5","task6","task7","task8","task9",
 db = base.init_db()
 vk = base.init_vk()
 longpoll = base.init_longpoll()
-keyboard_standart = open("C:\TrashBox\HAHATUN\Vk-Bot\keyboard_standart.json", "r", encoding="UTF-8").read()
-keyboard_subj = open("C:\TrashBox\HAHATUN\Vk-Bot\keyboard_subj.json", "r", encoding="UTF-8").read()
-keyboard_yn = open("C:\TrashBox\HAHATUN\Vk-Bot\keyboard_yn.json", "r", encoding="UTF-8").read()
-keyboard_answr = open("C:\TrashBox\HAHATUN\Vk-Bot\keyboard_answr.json", "r", encoding="UTF-8").read()
+keyboard_standart = open("C:\\TrashBox\\HAHATUN\\Vk-Bot\\keyboard_standart.json", "r", encoding="UTF-8").read()
+keyboard_subj = open("C:\\TrashBox\\HAHATUN\\Vk-Bot\\keyboard_subj.json", "r", encoding="UTF-8").read()
+keyboard_yn = open("C:\\TrashBox\\HAHATUN\\Vk-Bot\\keyboard_yn.json", "r", encoding="UTF-8").read()
+keyboard_answr = open("C:\\TrashBox\\HAHATUN\\Vk-Bot\\keyboard_answr.json", "r", encoding="UTF-8").read()
 for event in longpoll.listen():
     if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.text:
         if event.text.lower() == 'начать':
