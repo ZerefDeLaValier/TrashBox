@@ -9,8 +9,6 @@ import config
 import threading
 import queue
 
-id_list = []
-
 task = ["task1","task2","task3","task4","task5","task6","task7","task8","task9","task10"]
 db = base.init_db()
 vk = base.init_vk()
@@ -30,6 +28,7 @@ class pipe():
         self.life = True
         self.user_id = user_id
         self.status = 0
+        self.num = 0
         self.tests = tests
         threading.Thread(target=self.do, args = []).start()
     def do(self):
@@ -41,7 +40,7 @@ class pipe():
                 self.life = False
                 print("Dead")
                 break
-
+#Основа===========================================================================================================================================
             if self.status == 0: #Тут начало
                 self.tests = 9
                 if text == 'ассинхрон':
@@ -84,6 +83,10 @@ class pipe():
                     num = 0
                     self.status = 3
                     continue
+                elif text == 'статистика':
+                    vk.messages.send(
+                        user_id=self.user_id, random_id = random.randint(1, 2147483647),
+                        message="Ваша статистика по предметам: \n Математика: " + str(db.child('users').child(self.user_id).child("results").child('math').get().val()))
                 elif text == 'вверх вверх вниз вниз влево вправо влево вправо б а':
                     vk.messages.send( 
                         user_id=self.user_id, random_id = random.randint(1, 2147483647),
@@ -114,15 +117,14 @@ class pipe():
                                 user_id=self.user_id, random_id = random.randint(1, 2147483647),
                                 message="Авто-рассылка включена!", keyboard=keyboard_standart)
                     self.status = 0
-                    id_list.append(self.user_id)
+                    db.child('users').child(self.user_id).child("post").set(True)
                     continue
                 elif text == 'нет':
                     vk.messages.send(
                                 user_id=self.user_id, random_id = random.randint(1, 2147483647),
                                 message="Авто-рассылка отключена!", keyboard=keyboard_standart)
                     self.status = 0
-                    if self.user_id in id_list:
-                        id_list.remove(self.user_id)
+                    db.child('users').child(self.user_id).child("post").set(False)
                     continue
 # Тестирование ============================================================================================
             if self.status == 3:
@@ -138,32 +140,45 @@ class pipe():
                                     message="Хорошо", keyboard = keyboard_standart)
                     self.status = 0
                     continue
-# Ответ======================================================================================================
+# Тестирование2======================================================================================================
             if self.status == 4:
-                if text == db.child("math").child(task[self.tests]).child("ans").get().val():
+                if self.tests !=10:
+                    if text == db.child("math").child(task[self.tests]).child("ans").get().val():
+                        vk.messages.send(
+                            user_id=self.user_id, random_id = random.randint(1, 2147483647),
+                            message="Правильный ответ!")
+                        self.num += 1
+                        db.child('users').child(self.user_id).child("results").child('math').set(self.num)
+                        vk.messages.send(
+                                user_id=self.user_id, random_id = random.randint(1, 2147483647), keyboard=keyboard_answr,
+                                message=db.child("math").child(task[self.tests]).child("que").get().val()+ '\n\na)'+ db.child("math").child(task[self.tests]).child("1").get().val()+ '  б)'+ db.child("math").child(task[self.tests]).child("2").get().val()+ '  в)'+ db.child("math").child(task[self.tests]).child("3").get().val()+ '  г)'+ db.child("math").child(task[self.tests]).child("4").get().val()+ '\nОтвет?')
+                        self.tests += 1
+                        continue
+                    elif text == 'отмена тестирования':
+                        vk.messages.send(
+                            user_id=self.user_id, random_id = random.randint(1, 2147483647), keyboard=keyboard_standart,
+                            message="Тестирование отменено.")
+                        self.tests = 0
+                        self.num = 0
+                        db.child('users').child(self.user_id).child("results").child('math').set(self.num)
+                        self.status = 0
+                        continue
+                    else:
+                        vk.messages.send(
+                            user_id=self.user_id, random_id = random.randint(1, 2147483647),
+                            message="Неправильный ответ!")
+                        self.tests -= 1
+                        vk.messages.send(
+                                user_id=self.user_id, random_id = random.randint(1, 2147483647), keyboard=keyboard_answr,
+                                message=db.child("math").child(task[self.tests]).child("que").get().val()+ '\n\na)'+ db.child("math").child(task[self.tests]).child("1").get().val()+ '  б)'+ db.child("math").child(task[self.tests]).child("2").get().val()+ '  в)'+ db.child("math").child(task[self.tests]).child("3").get().val()+ '  г)'+ db.child("math").child(task[self.tests]).child("4").get().val()+ '\nОтвет?')
+                        continue
+                elif self.tests == 10:
                     vk.messages.send(
-                        user_id=self.user_id, random_id = random.randint(1, 2147483647),
-                        message="Правильный ответ!")
-                    num += 1
-                    self.tests -= 1
-                    vk.messages.send(
-                            user_id=self.user_id, random_id = random.randint(1, 2147483647), keyboard=keyboard_answr,
-                            message=db.child("math").child(task[self.tests]).child("que").get().val()+ '\n\na)'+ db.child("math").child(task[self.tests]).child("1").get().val()+ '  б)'+ db.child("math").child(task[self.tests]).child("2").get().val()+ '  в)'+ db.child("math").child(task[self.tests]).child("3").get().val()+ '  г)'+ db.child("math").child(task[self.tests]).child("4").get().val()+ '\nОтвет?')
-                    continue
-                elif text == 'отмена тестирования':
-                    self.tests = 0
-                    num = 0
+                                    user_id=self.user_id, random_id = random.randint(1, 2147483647),
+                                    message="Тестирование окончено! Введите 'Статистика'", keyboard = keyboard_standart)
                     self.status = 0
                     continue
-                else:
-                    vk.messages.send(
-                        user_id=self.user_id, random_id = random.randint(1, 2147483647),
-                        message="Неправильный ответ!")
-                    self.tests -= 1
-                    vk.messages.send(
-                            user_id=self.user_id, random_id = random.randint(1, 2147483647), keyboard=keyboard_answr,
-                            message=db.child("math").child(task[self.tests]).child("que").get().val()+ '\n\na)'+ db.child("math").child(task[self.tests]).child("1").get().val()+ '  б)'+ db.child("math").child(task[self.tests]).child("2").get().val()+ '  в)'+ db.child("math").child(task[self.tests]).child("3").get().val()+ '  г)'+ db.child("math").child(task[self.tests]).child("4").get().val()+ '\nОтвет?')
-                    continue
+
                 
 
 for event in longpoll.listen():
@@ -171,38 +186,18 @@ for event in longpoll.listen():
         try:
             if event.user_id not in users:
                 users[event.user_id] = pipe(10, event.user_id, 0)
+                name = vk.users.get(user_ids = event.user_id, name_case = 'nom')[0]['first_name']
+                last_name = vk.users.get(user_ids = event.user_id, name_case = 'nom')[0]['last_name']
+                data = {'name':name,'last_name':last_name, 'user_id':event.user_id}
+                db.child('users').child(event.user_id).set(data)
             if users[event.user_id].life != True:
                 users[event.user_id].life = True
                 threading.Thread(target=users[event.user_id].do, args = []).start()
             users[event.user_id].q.put(event.text.lower())
             print(event)
             print(users)
+            print(db.child("math").child("users").get().val())
         except ConnectionError as e:
                 print(str(e))
-                users[event.user_id].q.put(event.text.lower())
-
-
-
-
-
-
-"""             
-        elif event.text.lower() == 'статистика':
-            vk.messages.send(
-                user_id=event.user_id, random_id = random.randint(1, 2147483647),
-                message="Ваша статистика по предметам: \n Математика: " + str(num))
-        
-                        num = 0
-                        tests = 9
-                        while tests != -1:
-                            vk.messages.send(
-                                user_id=event.user_id, random_id = random.randint(1, 2147483647), keyboard=keyboard_answr,
-                                message=db.child("math").child(task[tests]).child("que").get().val()+ '\n\na)'+ db.child("math").child(task[tests]).child("1").get().val()+ '  б)'+ db.child("math").child(task[tests]).child("2").get().val()+ '  в)'+ db.child("math").child(task[tests]).child("3").get().val()+ '  г)'+ db.child("math").child(task[tests]).child("4").get().val()+ '\nОтвет?')
-                            for event in longpoll.listen():
-                                if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.text:
-                                    
-                            tests -= 1
-                        vk.messages.send(
-                                    user_id=event.user_id, random_id = random.randint(1, 2147483647),
-                                    message="Тестирование окончено! Введите 'Статистика'", keyboard = keyboard_standart)
-                        break"""
+                users[event.user_id].life = True
+                threading.Thread(target=users[event.user_id].do, args = []).start()
