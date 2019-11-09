@@ -220,9 +220,11 @@ for event in longpoll.listen():
                 users[event.user_id].life = True
                 threading.Thread(target=users[event.user_id].do, args = []).start()
             users[event.user_id].q.put(event.text.lower())
-            print(event)
-            print(users)
-            print(db.child("math").child("users").get().val())
+            all_objects = db.child("users").get()
+            for obj in all_objects.each():
+                print(obj.key())
+           # print(event)
+           # print(users)
         except ConnectionError as e:
                 print(str(e))
                 users[event.user_id].life = True
