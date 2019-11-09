@@ -47,5 +47,5 @@ def get_test(exam, work): # Return task from exam
 
 db = init_db()
 
-print(get_test("math","task1"))
+
 #================================================================================================
