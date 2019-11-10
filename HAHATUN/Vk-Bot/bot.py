@@ -30,6 +30,7 @@ class pipe():
         self.status = 0
         self.num = 0
         self.tests = tests
+        self.exam = "math"
         threading.Thread(target=self.do, args = []).start()
     def do(self):
         while True:
@@ -103,6 +104,7 @@ class pipe():
                                 user_id=self.user_id, random_id = random.randint(1, 2147483647),
                                 message="Ваш выбор: Математика", keyboard=keyboard_standart)
                     self.status = 0
+                    self.exam = "math"
                     continue
                 elif text == 'назад':
                     vk.messages.send(
@@ -132,7 +134,7 @@ class pipe():
                     self.status = 4
                     vk.messages.send(
                             user_id=self.user_id, random_id = random.randint(1, 2147483647), keyboard=keyboard_answr,
-                            message=base.get_test("math",task[self.tests]))
+                            message=base.get_test(self.exam,task[self.tests]))
                     continue
                 elif text == 'нет':
                     vk.messages.send(
@@ -152,7 +154,7 @@ class pipe():
                         self.tests -= 1
                         vk.messages.send(
                                 user_id=self.user_id, random_id = random.randint(1, 2147483647), keyboard=keyboard_answr,
-                                message=base.get_test("math",task[self.tests]))
+                                message=base.get_test(self.exam,task[self.tests]))
                         continue
                     elif text == 'отмена тестирования':
                         vk.messages.send(
@@ -170,16 +172,16 @@ class pipe():
                         self.tests -= 1
                         vk.messages.send(
                                 user_id=self.user_id, random_id = random.randint(1, 2147483647), keyboard=keyboard_answr,
-                                message=base.get_test("math", task[self.tests]))
+                                message=base.get_test(self.exam, task[self.tests]))
                         continue
 #=================================================================================================================================
                 elif self.tests == 0:
-                    if text == db.child("math").child(task[self.tests]).child("ans").get().val():
+                    if text == db.child(exam).child(task[self.tests]).child("ans").get().val():
                         vk.messages.send(
                             user_id=self.user_id, random_id = random.randint(1, 2147483647),
                             message="Правильный ответ!")
                         self.num += 1
-                        db.child('users').child(self.user_id).child("results").child('math').set(self.num)
+                        db.child('users').child(self.user_id).child("results").child(exam).set(self.num)
                         vk.messages.send(
                                     user_id=self.user_id, random_id = random.randint(1, 2147483647),
                                     message="Тестирование окончено! Введите 'Статистика'", keyboard = keyboard_standart)
