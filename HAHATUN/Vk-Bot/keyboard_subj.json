@@ -9,6 +9,14 @@
         "color": "positive"
       }
       ],
+      [{
+        "action": {
+          "type": "text",
+          "label": "2"
+        },
+        "color": "positive"
+      }
+      ],
     [{
         "action": {
             "type": "text",
