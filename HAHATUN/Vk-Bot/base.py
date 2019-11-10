@@ -7,7 +7,7 @@ from vk_api.longpoll import VkLongPoll, VkEventType
 #
 #=========================================Tokens==================================================
 vktoken = '12608dbd12d1a37e7dc4a19ff218849b5c123b431f2014fbec393e2e06b59a8baa623e225d5b53d8ddde1'
-pyrebase_path = "C:\\TrashBox\\HAHATUN\\Vk-Bot\\edubot72-firebase-adminsdk-ga2lf-a12ce0d85e.json"
+pyrebase_path = "edubot72-firebase-adminsdk-ga2lf-a12ce0d85e.json"
 #=================================================================================================
 #
 #====================================Vk initialization============================================
@@ -35,15 +35,21 @@ def get_user_info(id):
 
 
 def get_test(exam, work): # Return task from exam
-    test = {}             # Надо переделать структуру скорее всего, и подвести под адекватный вид
+                 # Надо переделать структуру скорее всего, и подвести под адекватный вид
                           # Тут можно сразу словарём выдавать, смотри на get_user_info
-    variants = db.child(exam).child(work).child("variants").get().val() + 1
-    test['question'] = db.child(exam).child(work).child("que").get().val()
-    for i in range(1,variants):
-        test[str(i)] = db.child(exam).child(work).child(str(i)).get().val()
-    test['answer'] = db.child(exam).child(work).child("ans").get().val()
-    return test
+    test = db.child(exam).child(work).get().val()
+    outstr = test["que"] + "\n\na) " + test["1"] + "\nб) " + test["2"]+ "\nв) " + test["3"]+ "\nг) " + test["4"] + "\nОтвет?"
+    return outstr
 
+
+
+def get_results(id):
+    results = db.child("users").child(id).child("results").get()
+    for id in results.each():
+        print(id.val())
+        data.append(id.val())
+    data = []
+    return data
 
 db = init_db()
 

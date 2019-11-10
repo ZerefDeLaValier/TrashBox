@@ -14,10 +14,10 @@ db = base.init_db()
 vk = base.init_vk()
 longpoll = base.init_longpoll()
 
-keyboard_standart = open("C:\\TrashBox\\HAHATUN\\Vk-Bot\\keyboard_standart.json", "r", encoding="UTF-8").read()
-keyboard_subj = open("C:\\TrashBox\\HAHATUN\\Vk-Bot\\keyboard_subj.json", "r", encoding="UTF-8").read()
-keyboard_yn = open("C:\\TrashBox\\HAHATUN\\Vk-Bot\\keyboard_yn.json", "r", encoding="UTF-8").read()
-keyboard_answr = open("C:\\TrashBox\\HAHATUN\\Vk-Bot\\keyboard_answr.json", "r", encoding="UTF-8").read()
+keyboard_standart = open("keyboard_standart.json", "r", encoding="UTF-8").read()
+keyboard_subj = open("keyboard_subj.json", "r", encoding="UTF-8").read()
+keyboard_yn = open("keyboard_yn.json", "r", encoding="UTF-8").read()
+keyboard_answr = open("keyboard_answr.json", "r", encoding="UTF-8").read()
 
 i = 0
 users = {}
@@ -132,7 +132,7 @@ class pipe():
                     self.status = 4
                     vk.messages.send(
                             user_id=self.user_id, random_id = random.randint(1, 2147483647), keyboard=keyboard_answr,
-                            message=db.child("math").child(task[self.tests]).child("que").get().val()+ '\n\na)'+ db.child("math").child(task[self.tests]).child("1").get().val()+ '  б)'+ db.child("math").child(task[self.tests]).child("2").get().val()+ '  в)'+ db.child("math").child(task[self.tests]).child("3").get().val()+ '  г)'+ db.child("math").child(task[self.tests]).child("4").get().val()+ '\nОтвет?')
+                            message=base.get_test("math",task[self.tests]))
                     continue
                 elif text == 'нет':
                     vk.messages.send(
@@ -152,7 +152,7 @@ class pipe():
                         self.tests -= 1
                         vk.messages.send(
                                 user_id=self.user_id, random_id = random.randint(1, 2147483647), keyboard=keyboard_answr,
-                                message=db.child("math").child(task[self.tests]).child("que").get().val()+ '\n\na)'+ db.child("math").child(task[self.tests]).child("1").get().val()+ '  б)'+ db.child("math").child(task[self.tests]).child("2").get().val()+ '  в)'+ db.child("math").child(task[self.tests]).child("3").get().val()+ '  г)'+ db.child("math").child(task[self.tests]).child("4").get().val()+ '\nОтвет?')
+                                message=base.get_test("math",task[self.tests]))
                         continue
                     elif text == 'отмена тестирования':
                         vk.messages.send(
@@ -170,7 +170,7 @@ class pipe():
                         self.tests -= 1
                         vk.messages.send(
                                 user_id=self.user_id, random_id = random.randint(1, 2147483647), keyboard=keyboard_answr,
-                                message=db.child("math").child(task[self.tests]).child("que").get().val()+ '\n\na)'+ db.child("math").child(task[self.tests]).child("1").get().val()+ '  б)'+ db.child("math").child(task[self.tests]).child("2").get().val()+ '  в)'+ db.child("math").child(task[self.tests]).child("3").get().val()+ '  г)'+ db.child("math").child(task[self.tests]).child("4").get().val()+ '\nОтвет?')
+                                message=base.get_test("math", task[self.tests]))
                         continue
 #=================================================================================================================================
                 elif self.tests == 0:
@@ -221,8 +221,7 @@ for event in longpoll.listen():
                 threading.Thread(target=users[event.user_id].do, args = []).start()
             users[event.user_id].q.put(event.text.lower())
             all_objects = db.child("users").get()
-            for obj in all_objects.each():
-                print(obj.key())
+            #for obj in all_objects.each():
            # print(event)
            # print(users)
         except ConnectionError as e:
