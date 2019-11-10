@@ -21,6 +21,7 @@ keyboard_answr = open("keyboard_answr.json", "r", encoding="UTF-8").read()
 
 i = 0
 users = {}
+
 class pipe():
     def __init__(self, timemax, user_id, tests):
         self.q = queue.Queue()
@@ -63,7 +64,9 @@ class pipe():
                 elif text == 'предмет':
                     vk.messages.send( 
                         user_id=self.user_id, random_id = random.randint(1, 2147483647),
-                        message="Выберите предмет: \n 1. Математика", keyboard=keyboard_subj)
+                        message="Выберите предмет: \n"
+                                " 1. Математика\n"
+                                " 2. Информатика", keyboard=keyboard_subj)
                     self.status = 1
                     continue
                 elif text == 'рассылка':
@@ -87,11 +90,16 @@ class pipe():
                 elif text == 'статистика':
                     vk.messages.send(
                         user_id=self.user_id, random_id = random.randint(1, 2147483647),
-                        message="Ваша статистика по предметам: \n Математика: " + str(db.child('users').child(self.user_id).child("results").child('math').get().val()))
+                        message="Ваша статистика по предметам: \n Математика: " + str(db.child('users').child(self.user_id).child("results").child('math').get().val()) +
+                                "\nИнформатика: " + str(db.child('users').child(self.user_id).child("results").child('cscience').get().val()) )
                 elif text == 'вверх вверх вниз вниз влево вправо влево вправо б а':
                     vk.messages.send( 
                         user_id=self.user_id, random_id = random.randint(1, 2147483647),
-                        message="Писал код: Степан Ларионов\nБаза данных и библиотеки: Богдан Ивакин\nВеб-разработка: Игнат Марковский\nДизайн, DJ и бета-тест: Артём Журиков\nБессменный лидер и наставник: Иван Гуляев", keyboard=keyboard_standart)
+                        message="Писал код: Степан Ларионов\n"
+                                "База данных и библиотеки: Богдан Ивакин\n"
+                                "Веб-разработка: Игнат Марковский\n"
+                                "Дизайн, DJ и бета-тест: Артём Журиков\n"
+                                "Бессменный лидер и наставник: Иван Гуляев", keyboard=keyboard_standart)
                 else:
                     vk.messages.send(
                                 user_id=self.user_id, random_id = random.randint(1, 2147483647),
@@ -105,6 +113,13 @@ class pipe():
                                 message="Ваш выбор: Математика", keyboard=keyboard_standart)
                     self.status = 0
                     self.exam = "math"
+                    continue
+                if text == '2':
+                    vk.messages.send(
+                                user_id=self.user_id, random_id = random.randint(1, 2147483647),
+                                message="Ваш выбор: Информатика", keyboard=keyboard_standart)
+                    self.status = 0
+                    self.exam = "cscience"
                     continue
                 elif text == 'назад':
                     vk.messages.send(
@@ -145,12 +160,12 @@ class pipe():
 # Тестирование2======================================================================================================
             if self.status == 4:
                 if self.tests !=0:
-                    if text == db.child("math").child(task[self.tests]).child("ans").get().val():
+                    if text == db.child(self.exam).child(task[self.tests]).child("ans").get().val():
                         vk.messages.send(
                             user_id=self.user_id, random_id = random.randint(1, 2147483647),
                             message="Правильный ответ!")
                         self.num += 1
-                        db.child('users').child(self.user_id).child("results").child('math').set(self.num)
+                        db.child('users').child(self.user_id).child("results").child(self.exam).set(self.num)
                         self.tests -= 1
                         vk.messages.send(
                                 user_id=self.user_id, random_id = random.randint(1, 2147483647), keyboard=keyboard_answr,
@@ -162,7 +177,7 @@ class pipe():
                             message="Тестирование отменено.")
                         self.tests = 0
                         self.num = 0
-                        db.child('users').child(self.user_id).child("results").child('math').set(self.num)
+                        db.child('users').child(self.user_id).child("results").child(self.exam).set(self.num)
                         self.status = 0
                         continue
                     else:
@@ -176,12 +191,12 @@ class pipe():
                         continue
 #=================================================================================================================================
                 elif self.tests == 0:
-                    if text == db.child(exam).child(task[self.tests]).child("ans").get().val():
+                    if text == db.child(self.exam).child(task[self.tests]).child("ans").get().val():
                         vk.messages.send(
                             user_id=self.user_id, random_id = random.randint(1, 2147483647),
                             message="Правильный ответ!")
                         self.num += 1
-                        db.child('users').child(self.user_id).child("results").child(exam).set(self.num)
+                        db.child('users').child(self.user_id).child("results").child(self.exam).set(self.num)
                         vk.messages.send(
                                     user_id=self.user_id, random_id = random.randint(1, 2147483647),
                                     message="Тестирование окончено! Введите 'Статистика'", keyboard = keyboard_standart)
@@ -193,7 +208,7 @@ class pipe():
                             message="Тестирование отменено.")
                         self.tests = 0
                         self.num = 0
-                        db.child('users').child(self.user_id).child("results").child('math').set(self.num)
+                        db.child('users').child(self.user_id).child("results").child(self.exam).set(self.num)
                         self.status = 0
                         continue
                     else:
