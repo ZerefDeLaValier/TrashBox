@@ -84,7 +84,6 @@ class pipe():
                     vk.messages.send(
                         user_id=self.user_id, random_id = random.randint(1, 2147483647),
                         message="Начать тестирование?\nДа/Нет", keyboard=keyboard_yn)
-                    db.child('users').child(self.user_id).child("results").child('math').set(0)
                     self.status = 3
                     continue
                 elif text == 'статистика':
@@ -146,6 +145,8 @@ class pipe():
 # Тестирование ============================================================================================
             if self.status == 3:
                 if text == 'да':
+                    self.num = 0
+                    db.child('users').child(self.user_id).child("results").child(self.exam).set(0)
                     self.status = 4
                     vk.messages.send(
                             user_id=self.user_id, random_id = random.randint(1, 2147483647), keyboard=keyboard_answr,
@@ -226,7 +227,6 @@ for event in longpoll.listen():
     if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.text:
         try:
             if (str(event.user_id) in base.get_users()) and (event.user_id not in users):
-                print("1")
                 users[event.user_id] = pipe(10, event.user_id, 0)
                 if users[event.user_id].life != True:
                     users[event.user_id].life = True
