@@ -21,6 +21,7 @@ keyboard_answr = open("C:\\TrashBox\\HAHATUN\\Vk-Bot\\keyboard_answr.json", "r",
 
 i = 0
 users = {}
+subj = {"math":"Математика", "cscience":"Информатика"}
 
 class pipe():
     def __init__(self, timemax, user_id, tests):
@@ -31,7 +32,7 @@ class pipe():
         self.status = 0
         self.num = 0
         self.tests = tests
-        self.exam = "math"
+        self.exam = "none"
         threading.Thread(target=self.do, args = []).start()
     def do(self):
         while True:
@@ -81,11 +82,17 @@ class pipe():
                         attachment="video316289109_456239236")
                     continue
                 elif text == 'тестирование':
-                    vk.messages.send(
-                        user_id=self.user_id, random_id = random.randint(1, 2147483647),
-                        message="Начать тестирование?\nДа/Нет", keyboard=keyboard_yn)
-                    self.status = 3
-                    continue
+                    if self.exam == "none":
+                        vk.messages.send(
+                            user_id=self.user_id, random_id = random.randint(1, 2147483647),
+                            message="Перед тестированием выберите предмет.")
+                        continue
+                    else:
+                        vk.messages.send(
+                            user_id=self.user_id, random_id = random.randint(1, 2147483647),
+                            message="Начать тестирование по предмету: "+ subj[self.exam] +"?\nДа/Нет", keyboard=keyboard_yn)
+                        self.status = 3
+                        continue
                 elif text == 'статистика':
                     vk.messages.send(
                         user_id=self.user_id, random_id = random.randint(1, 2147483647),
