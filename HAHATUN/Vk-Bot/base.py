@@ -46,13 +46,22 @@ def get_users():
     get_users = list(users_id)
     return get_users
 
-def get_results(id):
-    results = db.child("users").child(id).child("results").get()
-    for id in results.each():
-        print(id.val())
-        data.append(id.val())
+def get_adm():
+    adm_id = db.child("admins").get().val().keys()
+    get_adm = list(adm_id)
+    return get_adm
+
+def get_results(exam):
+    users_id = db.child("users").get().val().keys()
     data = []
+    for users in users_id:
+        result = db.child('users').child(users).child('results').child(exam).get().val()
+        name = db.child('users').child(users).child('name').get().val()
+        last_name = db.child('users').child(users).child('last_name').get().val()
+        string = (str(last_name) + ' ' + str(name) + ' : ' + str(result))
+        data.append(string)
     return data
+
 
 db = init_db()
 

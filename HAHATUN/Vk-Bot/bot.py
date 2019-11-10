@@ -8,6 +8,7 @@ import base
 import config
 import threading
 import queue
+import re
 
 task = ["task1","task2","task3","task4","task5","task6","task7","task8","task9","task10"]
 db = base.init_db()
@@ -18,11 +19,110 @@ keyboard_standart = open("C:\\TrashBox\\HAHATUN\\Vk-Bot\\keyboard_standart.json"
 keyboard_subj = open("C:\\TrashBox\\HAHATUN\\Vk-Bot\\keyboard_subj.json", "r", encoding="UTF-8").read()
 keyboard_yn = open("C:\\TrashBox\\HAHATUN\\Vk-Bot\\keyboard_yn.json", "r", encoding="UTF-8").read()
 keyboard_answr = open("C:\\TrashBox\\HAHATUN\\Vk-Bot\\keyboard_answr.json", "r", encoding="UTF-8").read()
-
+keyboard_adm = open("C:\\TrashBox\\HAHATUN\\Vk-Bot\\keyboard_adm.json", "r", encoding="UTF-8").read()
+keyboard_null = open("C:\\TrashBox\\HAHATUN\\Vk-Bot\\keyboard_null.json", "r", encoding="UTF-8").read()
 i = 0
 users = {}
 subj = {"math":"Математика", "cscience":"Информатика"}
+class admpipe():
+    def __init__(self, timemax, user_id):
+        self.q = queue.Queue()
+        self.time = timemax
+        self.life = True
+        self.user_id = user_id
+        self.status = 0
+        threading.Thread(target=self.do, args = []).start()
+    def do(self):
+        while True:
+            try:
+                text = self.q.get(block=True, timeout = self.time)
+            except queue.Empty as e:
+                print(str(e))
+                self.life = False
+                print("Dead")
+                break
+            if self.status == 0:
+                if text == 'whoami':
+                    vk.messages.send( 
+                                user_id=self.user_id, random_id = random.randint(1, 2147483647),
+                                message="Вы - Админ", keyboard=keyboard_adm)
+                    continue
+                elif text == 'добавить админа':
+                    vk.messages.send( 
+                                user_id=self.user_id, random_id = random.randint(1, 2147483647),
+                                message="Чтобы добавить админа отправьте ссылку на его страницу вк.", keyboard=keyboard_null)
+                    self.status = 1
+                    continue
+                elif text == 'удалить админа':
+                    vk.messages.send( 
+                                user_id=self.user_id, random_id = random.randint(1, 2147483647),
+                                message="Чтобы удалить админа отправьте ссылку на его страницу вк.", keyboard=keyboard_null)
+                    self.status = 2
+                    continue
+                elif text == "статистика":
+                    vk.messages.send( 
+                                user_id=self.user_id, random_id = random.randint(1, 2147483647),
+                                message="Выберите предмет:\n1.Математика\n2.Информатика", keyboard=keyboard_subj)
+                    self.status = 3
+                    continue
+            elif self.status == 1:
+                try:
+                    split_id = re.split(r"/", text)
+                    adm_id = vk.utils.resolveScreenName(screen_name = str(split_id[3]))["object_id"]
+                    name = vk.users.get(user_ids = adm_id, name_case = 'nom')[0]['first_name']
+                    last_name = vk.users.get(user_ids = adm_id, name_case = 'nom')[0]['last_name']
+                    data_adm = {'name':name,'last_name':last_name, 'user_id':adm_id}
+                    db.child('admins').child(adm_id).set(data_adm)
+                    vk.messages.send( 
+                                    user_id=self.user_id, random_id = random.randint(1, 2147483647),
+                                    message="Админ добавлен!", keyboard=keyboard_adm)
+                    self.status = 0
+                    continue
+                except IndexError:
+                    vk.messages.send( 
+                                    user_id=self.user_id, random_id = random.randint(1, 2147483647),
+                                    message="Неверная ссылка", keyboard=keyboard_adm)
+                    self.status = 0
+                    continue
 
+            elif self.status == 2:
+                try:
+                    split_id = re.split(r"/", text)
+                    adm_id = vk.utils.resolveScreenName(screen_name = str(split_id[3]))["object_id"]
+                    db.child('admins').child(adm_id).remove()
+                    vk.messages.send( 
+                                    user_id=self.user_id, random_id = random.randint(1, 2147483647),
+                                    message="Админ удален!", keyboard=keyboard_adm)
+                    self.status = 0
+                    continue
+                except IndexError:
+                    vk.messages.send( 
+                                    user_id=self.user_id, random_id = random.randint(1, 2147483647),
+                                    message="Неверная ссылка", keyboard=keyboard_adm)
+                    self.status = 0
+                    continue
+            elif self.status == 3:
+                if text == '1':
+                    self.exam = "math"
+                    vk.messages.send(
+                                user_id=self.user_id, random_id = random.randint(1, 2147483647),
+                                message="Статистика по математике:\n"+('\n'.join(base.get_results(self.exam))), keyboard=keyboard_adm)
+                    self.status = 0
+                    continue
+                elif text == '2':
+                    self.exam = "cscience"
+                    vk.messages.send(
+                                user_id=self.user_id, random_id = random.randint(1, 2147483647),
+                                message="Статистика по информатике:\n"+('\n'.join(base.get_results(self.exam))), keyboard=keyboard_adm)
+                    self.status = 0
+                    continue
+                elif text == 'назад':
+                    vk.messages.send(
+                                user_id=self.user_id, random_id = random.randint(1, 2147483647),
+                                message="Меню", keyboard=keyboard_adm)
+                    self.status = 0
+                    continue
+            
 class pipe():
     def __init__(self, timemax, user_id, tests):
         self.q = queue.Queue()
@@ -46,11 +146,10 @@ class pipe():
 #Основа===========================================================================================================================================
             if self.status == 0: #Тут начало
                 self.tests = 9
-                if text == 'ассинхрон':
-                    for i in range(5):
-                        vk.messages.send( 
-                            user_id=self.user_id, random_id = random.randint(1, 2147483647),
-                            message="#ССАГдеАссинхрон, #СпасибоАркадий, #ДайБогЧтобыРаботало", keyboard=keyboard_standart)
+                if text == 'whoami':
+                    vk.messages.send( 
+                        user_id=self.user_id, random_id = random.randint(1, 2147483647),
+                        message="Вы - Пользователь", keyboard=keyboard_standart)
                     continue
                 elif text == 'начать':
                     vk.messages.send( 
@@ -120,7 +219,7 @@ class pipe():
                     self.status = 0
                     self.exam = "math"
                     continue
-                if text == '2':
+                elif text == '2':
                     vk.messages.send(
                                 user_id=self.user_id, random_id = random.randint(1, 2147483647),
                                 message="Ваш выбор: Информатика", keyboard=keyboard_standart)
@@ -233,25 +332,37 @@ class pipe():
 for event in longpoll.listen():
     if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.text:
         try:
-            if (str(event.user_id) in base.get_users()) and (event.user_id not in users):
-                users[event.user_id] = pipe(10, event.user_id, 0)
-                if users[event.user_id].life != True:
-                    users[event.user_id].life = True
-                    threading.Thread(target=users[event.user_id].do, args = []).start()
-                    users[event.user_id].q.put(event.text.lower())
-                users[event.user_id].q.put(event.text.lower())
-            else:
+            if (str(event.user_id) in base.get_adm()):
                 if event.user_id not in users:
-                    users[event.user_id] = pipe(10, event.user_id, 0)
+                    users[event.user_id] = admpipe(10, event.user_id)
                     name = vk.users.get(user_ids = event.user_id, name_case = 'nom')[0]['first_name']
                     last_name = vk.users.get(user_ids = event.user_id, name_case = 'nom')[0]['last_name']
                     data = {'name':name,'last_name':last_name, 'user_id':event.user_id}
-                    db.child('users').child(event.user_id).set(data)
+                    db.child('admins').child(event.user_id).set(data)
                 if users[event.user_id].life != True:
                     users[event.user_id].life = True
                     threading.Thread(target=users[event.user_id].do, args = []).start()
                 users[event.user_id].q.put(event.text.lower())
+            else:
+                if (str(event.user_id) in base.get_users()) and (event.user_id not in users):
+                    users[event.user_id] = pipe(10, event.user_id, 0)
+                    if users[event.user_id].life != True:
+                        users[event.user_id].life = True
+                        threading.Thread(target=users[event.user_id].do, args = []).start()
+                        users[event.user_id].q.put(event.text.lower())
+                    users[event.user_id].q.put(event.text.lower())
+                else:
+                    if event.user_id not in users:
+                        users[event.user_id] = pipe(10, event.user_id, 0)
+                        name = vk.users.get(user_ids = event.user_id, name_case = 'nom')[0]['first_name']
+                        last_name = vk.users.get(user_ids = event.user_id, name_case = 'nom')[0]['last_name']
+                        data = {'name':name,'last_name':last_name, 'user_id':event.user_id}
+                        db.child('users').child(event.user_id).set(data)
+                    if users[event.user_id].life != True:
+                        users[event.user_id].life = True
+                        threading.Thread(target=users[event.user_id].do, args = []).start()
+                    users[event.user_id].q.put(event.text.lower())
         except ConnectionError as e:
-                print(str(e))
-                users[event.user_id].life = True
-                threading.Thread(target=users[event.user_id].do, args = []).start()
+            print(str(e))
+            users[event.user_id].life = True
+            threading.Thread(target=users[event.user_id].do, args = []).start()

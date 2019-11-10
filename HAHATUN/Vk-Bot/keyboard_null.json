@@ -1,0 +1,11 @@
+{   
+    "one_time": false,
+    "buttons": [
+        [{
+        "action": {
+          "type": "text",
+          "label": "Введите ссылку"
+        },
+        "color": "default"
+        }]]
+}
