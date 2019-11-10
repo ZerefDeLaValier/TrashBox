@@ -15,12 +15,12 @@ db = base.init_db()
 vk = base.init_vk()
 longpoll = base.init_longpoll()
 
-keyboard_standart = open("C:\\TrashBox\\HAHATUN\\Vk-Bot\\keyboard_standart.json", "r", encoding="UTF-8").read()
-keyboard_subj = open("C:\\TrashBox\\HAHATUN\\Vk-Bot\\keyboard_subj.json", "r", encoding="UTF-8").read()
-keyboard_yn = open("C:\\TrashBox\\HAHATUN\\Vk-Bot\\keyboard_yn.json", "r", encoding="UTF-8").read()
-keyboard_answr = open("C:\\TrashBox\\HAHATUN\\Vk-Bot\\keyboard_answr.json", "r", encoding="UTF-8").read()
-keyboard_adm = open("C:\\TrashBox\\HAHATUN\\Vk-Bot\\keyboard_adm.json", "r", encoding="UTF-8").read()
-keyboard_null = open("C:\\TrashBox\\HAHATUN\\Vk-Bot\\keyboard_null.json", "r", encoding="UTF-8").read()
+keyboard_standart = open("keyboard_standart.json", "r", encoding="UTF-8").read()
+keyboard_subj = open("keyboard_subj.json", "r", encoding="UTF-8").read()
+keyboard_yn = open("keyboard_yn.json", "r", encoding="UTF-8").read()
+keyboard_answr = open("keyboard_answr.json", "r", encoding="UTF-8").read()
+keyboard_adm = open("keyboard_adm.json", "r", encoding="UTF-8").read()
+keyboard_null = open("keyboard_null.json", "r", encoding="UTF-8").read()
 i = 0
 users = {}
 subj = {"math":"Математика", "cscience":"Информатика"}

@@ -7,7 +7,7 @@ from vk_api.longpoll import VkLongPoll, VkEventType
 #
 #=========================================Tokens==================================================
 vktoken = '12608dbd12d1a37e7dc4a19ff218849b5c123b431f2014fbec393e2e06b59a8baa623e225d5b53d8ddde1'
-pyrebase_path = "C:\\TrashBox\\HAHATUN\\Vk-Bot\\edubot72-firebase-adminsdk-ga2lf-a12ce0d85e.json"
+pyrebase_path = "edubot72-firebase-adminsdk-ga2lf-a12ce0d85e.json"
 #=================================================================================================
 #
 #====================================Vk initialization============================================
