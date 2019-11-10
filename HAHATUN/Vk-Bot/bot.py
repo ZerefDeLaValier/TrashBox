@@ -222,8 +222,6 @@ class pipe():
                         continue
                     
 
-                
-
 for event in longpoll.listen():
     if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.text:
         try:
