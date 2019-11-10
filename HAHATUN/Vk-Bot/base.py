@@ -7,7 +7,7 @@ from vk_api.longpoll import VkLongPoll, VkEventType
 #
 #=========================================Tokens==================================================
 vktoken = '12608dbd12d1a37e7dc4a19ff218849b5c123b431f2014fbec393e2e06b59a8baa623e225d5b53d8ddde1'
-pyrebase_path = "edubot72-firebase-adminsdk-ga2lf-a12ce0d85e.json"
+pyrebase_path = "C:\\TrashBox\\HAHATUN\\Vk-Bot\\edubot72-firebase-adminsdk-ga2lf-a12ce0d85e.json"
 #=================================================================================================
 #
 #====================================Vk initialization============================================
@@ -41,7 +41,10 @@ def get_test(exam, work): # Return task from exam
     outstr = test["que"] + "\n\na) " + test["1"] + "\nб) " + test["2"]+ "\nв) " + test["3"]+ "\nг) " + test["4"] + "\nОтвет?"
     return outstr
 
-
+def get_users():
+    users_id = db.child("users").get().val().keys()
+    get_users = list(users_id)
+    return get_users
 
 def get_results(id):
     results = db.child("users").child(id).child("results").get()

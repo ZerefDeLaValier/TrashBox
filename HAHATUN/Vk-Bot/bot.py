@@ -14,10 +14,10 @@ db = base.init_db()
 vk = base.init_vk()
 longpoll = base.init_longpoll()
 
-keyboard_standart = open("keyboard_standart.json", "r", encoding="UTF-8").read()
-keyboard_subj = open("keyboard_subj.json", "r", encoding="UTF-8").read()
-keyboard_yn = open("keyboard_yn.json", "r", encoding="UTF-8").read()
-keyboard_answr = open("keyboard_answr.json", "r", encoding="UTF-8").read()
+keyboard_standart = open("C:\\TrashBox\\HAHATUN\\Vk-Bot\\keyboard_standart.json", "r", encoding="UTF-8").read()
+keyboard_subj = open("C:\\TrashBox\\HAHATUN\\Vk-Bot\\keyboard_subj.json", "r", encoding="UTF-8").read()
+keyboard_yn = open("C:\\TrashBox\\HAHATUN\\Vk-Bot\\keyboard_yn.json", "r", encoding="UTF-8").read()
+keyboard_answr = open("C:\\TrashBox\\HAHATUN\\Vk-Bot\\keyboard_answr.json", "r", encoding="UTF-8").read()
 
 i = 0
 users = {}
@@ -222,25 +222,28 @@ class pipe():
                         continue
                     
 
-                
-
 for event in longpoll.listen():
     if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.text:
         try:
-            if event.user_id not in users:
+            if (str(event.user_id) in base.get_users()) and (event.user_id not in users):
+                print("1")
                 users[event.user_id] = pipe(10, event.user_id, 0)
-                name = vk.users.get(user_ids = event.user_id, name_case = 'nom')[0]['first_name']
-                last_name = vk.users.get(user_ids = event.user_id, name_case = 'nom')[0]['last_name']
-                data = {'name':name,'last_name':last_name, 'user_id':event.user_id}
-                db.child('users').child(event.user_id).set(data)
-            if users[event.user_id].life != True:
-                users[event.user_id].life = True
-                threading.Thread(target=users[event.user_id].do, args = []).start()
-            users[event.user_id].q.put(event.text.lower())
-            all_objects = db.child("users").get()
-            #for obj in all_objects.each():
-           # print(event)
-           # print(users)
+                if users[event.user_id].life != True:
+                    users[event.user_id].life = True
+                    threading.Thread(target=users[event.user_id].do, args = []).start()
+                    users[event.user_id].q.put(event.text.lower())
+                users[event.user_id].q.put(event.text.lower())
+            else:
+                if event.user_id not in users:
+                    users[event.user_id] = pipe(10, event.user_id, 0)
+                    name = vk.users.get(user_ids = event.user_id, name_case = 'nom')[0]['first_name']
+                    last_name = vk.users.get(user_ids = event.user_id, name_case = 'nom')[0]['last_name']
+                    data = {'name':name,'last_name':last_name, 'user_id':event.user_id}
+                    db.child('users').child(event.user_id).set(data)
+                if users[event.user_id].life != True:
+                    users[event.user_id].life = True
+                    threading.Thread(target=users[event.user_id].do, args = []).start()
+                users[event.user_id].q.put(event.text.lower())
         except ConnectionError as e:
                 print(str(e))
                 users[event.user_id].life = True
