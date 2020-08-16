@@ -1,0 +1,27 @@
+{
+    "one_time": false,
+    "buttons": [
+      [{
+        "action": {
+          "type": "text",
+          "label": "Присланные работы от класса"
+        },
+        "color": "positive"
+      }
+      ],
+      [{
+        "action": {
+          "type": "text",
+          "label": "Список учеников"
+        },
+        "color": "positive"
+      }
+      ],
+    [{
+        "action": {
+            "type": "text",
+            "label": "Назад"
+          },
+          "color": "default"
+    }]]
+}

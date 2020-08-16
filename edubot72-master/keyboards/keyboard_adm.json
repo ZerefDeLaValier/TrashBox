@@ -1,0 +1,27 @@
+{
+    "one_time": false,
+    "buttons": [
+        [{
+        "action": {
+          "type": "text",
+          "label": "Статистика"
+        },
+        "color": "positive"
+        }],
+    [{
+            "action": {
+              "type": "text",
+              "label": "Добавить админа"
+            },
+            "color": "default"
+          },
+        {
+            "action": {
+            "type": "text",
+            "label": "Удалить админа"
+          },
+          "color": "default"}
+        
+      ]
+    ]
+  }
